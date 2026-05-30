@@ -110,14 +110,22 @@ async def receive_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return LINK
 
     status = await update.message.reply_html("⏳ Mengambil data produk...")
-    product = await shopee_api.get_product_detail(shop_id, item_id)
+    client: ShopeeCheckoutClient = context.user_data["client"]
 
-    if not product:
-        await status.edit_text(
-            "❌ Gagal mengambil data produk (mungkin diblok anti-bot). "
-            "Coba link lain atau /batal."
-        )
-        return LINK
+    # Ambil data produk pakai sesi login (cookie) - jauh lebih jarang diblok
+    # dibanding request anonim.
+    try:
+        product = await client.get_product_detail(shop_id, item_id)
+    except ShopeeCheckoutError as e:
+        # Fallback: coba via koneksi anonim
+        product = await shopee_api.get_product_detail(shop_id, item_id)
+        if not product:
+            await status.edit_text(
+                f"❌ Gagal mengambil data produk.\n\n<b>Detail:</b> {e}\n\n"
+                "Coba link lain atau /batal.",
+                parse_mode="HTML",
+            )
+            return LINK
 
     context.user_data.update({
         "shop_id": shop_id,

@@ -105,6 +105,20 @@ class ShopeeCheckoutClient:
             )
         return info
 
+    # ----------------------------------------------------------- product
+    async def get_product_detail(self, shop_id: int, item_id: int) -> dict:
+        """Ambil detail produk memakai sesi login (cookie)."""
+        params = {"shopid": shop_id, "itemid": item_id}
+        referer = f"https://shopee.co.id/product/{shop_id}/{item_id}"
+        data = await self._request("GET", "/item/get", params=params, referer=referer)
+        item = data.get("data") if isinstance(data, dict) else None
+        if not item:
+            err = data.get("error_msg") or data.get("error") if isinstance(data, dict) else None
+            raise ShopeeCheckoutError(
+                f"Produk kosong dari API Shopee (error={err})."
+            )
+        return item
+
     # --------------------------------------------------------------- cart
     async def add_to_cart(self, shop_id: int, item_id: int, model_id: int,
                           quantity: int) -> dict:

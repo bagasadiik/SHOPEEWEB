@@ -69,10 +69,9 @@ Atau cukup kirim **link produk Shopee** langsung, bot akan otomatis menampilkan 
 
 ## 🛠 Tech Stack
 
-- Python 3.9+
-- python-telegram-bot v20+
+- Python 3.10+
+- python-telegram-bot v21+
 - aiohttp (async HTTP requests)
-- BeautifulSoup4 (HTML parsing)
 
 ## 📁 Struktur Project
 

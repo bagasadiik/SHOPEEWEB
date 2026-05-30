@@ -16,6 +16,8 @@ import json
 import time
 import aiohttp
 
+from config import get_ssl_param
+
 
 class ShopeeCheckoutError(Exception):
     """Error khusus untuk proses checkout."""
@@ -68,6 +70,7 @@ class ShopeeCheckoutClient:
                     params=params,
                     headers=self._headers(referer),
                     timeout=20,
+                    ssl=get_ssl_param(),
                 ) as resp:
                     text = await resp.text()
                     if resp.status != 200:

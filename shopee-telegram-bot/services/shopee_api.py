@@ -2,7 +2,7 @@
 
 import aiohttp
 import re
-from config import SHOPEE_HEADERS, SHOPEE_API_BASE
+from config import SHOPEE_HEADERS, SHOPEE_API_BASE, get_ssl_param
 
 
 class ShopeeAPI:
@@ -31,7 +31,7 @@ class ShopeeAPI:
         
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params, headers=self.headers, timeout=15) as response:
+                async with session.get(url, params=params, headers=self.headers, timeout=15, ssl=get_ssl_param()) as response:
                     if response.status == 200:
                         data = await response.json()
                         if data and data.get("data"):
@@ -58,7 +58,7 @@ class ShopeeAPI:
         
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params, headers=self.headers, timeout=15) as response:
+                async with session.get(url, params=params, headers=self.headers, timeout=15, ssl=get_ssl_param()) as response:
                     if response.status == 200:
                         data = await response.json()
                         if data and data.get("data"):
@@ -85,7 +85,7 @@ class ShopeeAPI:
         
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params, headers=self.headers, timeout=15) as response:
+                async with session.get(url, params=params, headers=self.headers, timeout=15, ssl=get_ssl_param()) as response:
                     if response.status == 200:
                         data = await response.json()
                         if data and data.get("data"):
@@ -110,7 +110,8 @@ class ShopeeAPI:
                 async with session.get(
                     short_url, 
                     allow_redirects=False,
-                    timeout=10
+                    timeout=10,
+                    ssl=get_ssl_param()
                 ) as response:
                     if response.status in (301, 302):
                         location = response.headers.get("Location", short_url)
@@ -143,7 +144,7 @@ class ShopeeAPI:
         
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url, params=params, headers=self.headers, timeout=15) as response:
+                async with session.get(url, params=params, headers=self.headers, timeout=15, ssl=get_ssl_param()) as response:
                     if response.status == 200:
                         data = await response.json()
                         if data and data.get("items"):

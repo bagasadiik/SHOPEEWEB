@@ -1,4 +1,5 @@
 import os
+import ssl
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,6 +14,37 @@ ADMIN_ID = os.getenv("ADMIN_ID", "")
 #   PROXY_URL=socks5://127.0.0.1:1080
 #   PROXY_URL=http://127.0.0.1:8080
 PROXY_URL = os.getenv("PROXY_URL", "")
+
+# ----------------------------------------------------------------- SSL config
+# VERIFY_SSL=false  -> nonaktifkan verifikasi sertifikat (DARURAT, tidak aman;
+#                      pakai hanya jika jaringan/antivirus menyadap HTTPS).
+# CA_BUNDLE=/path/to/ca.pem -> pakai CA bundle custom (mis. root CA korporat).
+VERIFY_SSL = os.getenv("VERIFY_SSL", "true").strip().lower() not in (
+    "false", "0", "no", "off",
+)
+CA_BUNDLE = os.getenv("CA_BUNDLE", "").strip()
+
+try:
+    import certifi
+    _CERTIFI_PATH = certifi.where()
+except Exception:
+    _CERTIFI_PATH = None
+
+
+def get_ssl_param():
+    """
+    Nilai untuk diteruskan ke aiohttp lewat kwarg `ssl=`.
+      - False        -> verifikasi dimatikan (tidak aman)
+      - SSLContext   -> pakai CA custom / certifi
+      - None         -> default aiohttp
+    """
+    if not VERIFY_SSL:
+        return False
+    if CA_BUNDLE and os.path.exists(CA_BUNDLE):
+        return ssl.create_default_context(cafile=CA_BUNDLE)
+    if _CERTIFI_PATH:
+        return ssl.create_default_context(cafile=_CERTIFI_PATH)
+    return None
 
 # Shopee API Base URLs
 SHOPEE_API_BASE = "https://shopee.co.id/api/v4"

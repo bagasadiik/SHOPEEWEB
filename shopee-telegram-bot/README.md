@@ -64,8 +64,25 @@ python bot.py
 | `/resi [nomor_resi]` | Tracking resi pengiriman |
 | `/ongkir [asal] [tujuan] [berat]` | Cek ongkos kirim |
 | `/toko [link_toko]` | Cek rating toko |
+| `/beli` | Auto-checkout produk (login via cookie) ⚠️ |
 
 Atau cukup kirim **link produk Shopee** langsung, bot akan otomatis menampilkan detail produk.
+
+## ⚠️ Fitur Auto-Checkout (`/beli`)
+
+Flow: `cookie` → `link produk` → `varian` → `jumlah` → `ongkir` → `voucher` → `pembayaran` → `checkout`.
+
+> **PERINGATAN KERAS:**
+> - Otomatisasi checkout **melanggar Terms of Service Shopee**. Risiko akun
+>   dibekukan/banned ditanggung pengguna sendiri.
+> - Shopee punya proteksi **anti-bot** (tanda tangan request, device fingerprint).
+>   Login via raw cookie **sering tidak cukup** untuk menembus `place_order` —
+>   anggap fitur ini best-effort, bukan jaminan tembus checkout.
+> - **Raw cookie = akses penuh ke akunmu.** Bot menyimpannya hanya di memori
+>   (RAM) selama sesi, tidak di-log dan tidak disimpan ke disk. Pesan berisi
+>   cookie otomatis dihapus dari chat. Jangan pernah bagikan cookie ke siapa pun.
+>
+> Ketik `/batal` kapan saja untuk membatalkan & menghapus data sesi.
 
 ## 🩺 Troubleshooting
 

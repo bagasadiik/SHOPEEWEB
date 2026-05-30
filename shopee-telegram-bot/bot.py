@@ -30,6 +30,7 @@ from handlers import (
     resi_command,
     ongkir_command,
     toko_command,
+    build_checkout_handler,
 )
 from utils.formatter import format_help
 
@@ -184,6 +185,7 @@ async def post_init(application: Application):
         BotCommand("resi", "Lacak resi pengiriman"),
         BotCommand("ongkir", "Cek ongkos kirim antar kota"),
         BotCommand("toko", "Cek rating & info toko"),
+        BotCommand("beli", "Auto-checkout produk (pakai cookie)"),
     ]
     try:
         await bot.set_my_commands(commands)
@@ -240,7 +242,11 @@ def main():
     app.add_handler(CommandHandler("resi", resi_command))
     app.add_handler(CommandHandler("ongkir", ongkir_command))
     app.add_handler(CommandHandler("toko", toko_command))
-    
+
+    # Conversation handler: flow auto-checkout (/beli)
+    # Ditambahkan sebelum MessageHandler auto-detect agar input flow tertangkap.
+    app.add_handler(build_checkout_handler())
+
     # Callback query handler (inline keyboard)
     app.add_handler(CallbackQueryHandler(callback_handler))
     

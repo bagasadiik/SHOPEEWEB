@@ -21,7 +21,7 @@ from telegram.ext import (
 
 from services.shopee_checkout import ShopeeCheckoutClient, ShopeeCheckoutError
 from services.shopee_api import ShopeeAPI
-from utils.helpers import extract_shopee_ids, format_price
+from utils.helpers import extract_shopee_ids, format_price, is_short_link
 
 shopee_api = ShopeeAPI()
 
@@ -90,11 +90,22 @@ async def receive_cookie(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def receive_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Terima link produk, ambil detail & varian."""
     url = update.message.text.strip()
+
+    # Resolve short link (s.shopee.co.id / shp.ee) ke full URL dulu
+    if is_short_link(url):
+        status0 = await update.message.reply_html("⏳ Memproses short link...")
+        url = await shopee_api.resolve_short_link(url)
+        try:
+            await status0.delete()
+        except Exception:
+            pass
+
     shop_id, item_id = extract_shopee_ids(url)
 
     if not shop_id or not item_id:
         await update.message.reply_html(
-            "❌ Link produk tidak valid. Kirim link produk Shopee yang benar, atau /batal."
+            "❌ Link produk tidak valid / tidak bisa di-resolve.\n"
+            "Kirim link produk Shopee yang benar (boleh short link), atau /batal."
         )
         return LINK
 

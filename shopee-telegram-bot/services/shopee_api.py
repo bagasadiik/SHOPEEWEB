@@ -105,18 +105,22 @@ class ShopeeAPI:
         Returns:
             str: Full URL atau original URL jika gagal
         """
+        headers = {"User-Agent": self.headers.get("User-Agent", "Mozilla/5.0")}
         try:
             async with aiohttp.ClientSession() as session:
+                # Ikuti seluruh rantai redirect (s.shopee.co.id -> shopee.co.id/...)
                 async with session.get(
-                    short_url, 
-                    allow_redirects=False,
-                    timeout=10,
-                    ssl=get_ssl_param()
+                    short_url,
+                    allow_redirects=True,
+                    timeout=15,
+                    ssl=get_ssl_param(),
+                    headers=headers,
                 ) as response:
-                    if response.status in (301, 302):
-                        location = response.headers.get("Location", short_url)
-                        return location
-                    return short_url
+                    final_url = str(response.url)
+                    if final_url and final_url != short_url:
+                        return final_url
+                    # Fallback: baca header Location bila redirect tidak terikuti
+                    return response.headers.get("Location", short_url)
         except Exception as e:
             print(f"Error resolving short link: {e}")
             return short_url

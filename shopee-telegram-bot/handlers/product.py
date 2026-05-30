@@ -3,7 +3,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from services.shopee_api import ShopeeAPI
-from utils.helpers import extract_shopee_ids, is_shopee_link
+from utils.helpers import extract_shopee_ids, is_shopee_link, is_short_link
 from utils.formatter import format_product_detail, format_price_info, format_error
 
 shopee_api = ShopeeAPI()
@@ -66,7 +66,7 @@ async def _process_product_link(update: Update, url: str, mode: str = "detail"):
     await update.message.chat.send_action("typing")
     
     # Resolve short link jika perlu
-    if "shp.ee" in url or "shope.ee" in url:
+    if is_short_link(url):
         loading_msg = await update.message.reply_html("⏳ Memproses short link...")
         url = await shopee_api.resolve_short_link(url)
         await loading_msg.delete()

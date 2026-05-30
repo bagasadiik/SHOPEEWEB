@@ -70,6 +70,18 @@ def is_shopee_link(text: str) -> bool:
     return False
 
 
+def is_short_link(url: str) -> bool:
+    """Cek apakah url adalah short link Shopee yang perlu di-resolve."""
+    short_markers = [
+        "s.shopee.",      # s.shopee.co.id
+        "shp.ee",
+        "shope.ee",
+        "/universal-link",
+    ]
+    low = url.lower()
+    return any(m in low for m in short_markers)
+
+
 def format_price(price: int) -> str:
     """Format harga ke format Rupiah."""
     return f"Rp {price:,.0f}".replace(",", ".")

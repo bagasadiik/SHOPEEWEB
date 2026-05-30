@@ -1,0 +1,7 @@
+services:
+  shopee-bot:
+    build: .
+    container_name: shopee-tools-bot
+    restart: unless-stopped
+    env_file:
+      - .env

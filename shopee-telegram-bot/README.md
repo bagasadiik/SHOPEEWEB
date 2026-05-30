@@ -11,40 +11,47 @@ Bot Telegram untuk tools Shopee yang menyediakan berbagai fitur berguna untuk be
 5. **📊 Cek Ongkir** - Cek ongkos kirim antar kota
 6. **⭐ Cek Rating Toko** - Cek reputasi dan rating toko
 
-## 🚀 Cara Install
+## 🚀 Cara Tercepat (1 Perintah)
 
-### 1. Clone Repository
+Bot otomatis bikin virtual environment, install dependencies, simpan token, lalu jalan.
+
+**Linux / macOS:**
 ```bash
-git clone https://github.com/bagasadiik/SHOPEEWEB.git
+git clone -b feat/shopee-telegram-bot https://github.com/bagasadiik/SHOPEEWEB.git
 cd SHOPEEWEB/shopee-telegram-bot
+./run.sh TOKEN_DARI_BOTFATHER
 ```
 
-### 2. Install Dependencies
+**Windows:**
+```bat
+git clone -b feat/shopee-telegram-bot https://github.com/bagasadiik/SHOPEEWEB.git
+cd SHOPEEWEB\shopee-telegram-bot
+run.bat TOKEN_DARI_BOTFATHER
+```
+
+> Token cukup dimasukkan **sekali**. Selanjutnya cukup jalankan `./run.sh` (atau `run.bat`) tanpa argumen.
+
+Saat pertama jalan, bot otomatis mendaftarkan menu command & deskripsi ke Telegram — jadi **tidak perlu setting manual di @BotFather**.
+
+## 🐳 Alternatif: Docker
+
+```bash
+cp .env.example .env   # lalu isi BOT_TOKEN di file .env
+docker compose up -d
+```
+
+## 🔧 Cara Manual (opsional)
+
 ```bash
 pip install -r requirements.txt
-```
-
-### 3. Konfigurasi
-Copy file `.env.example` ke `.env` dan isi dengan token bot Telegram kamu:
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-```
-BOT_TOKEN=your_telegram_bot_token_here
-```
-
-### 4. Dapatkan Bot Token
-1. Buka Telegram, cari @BotFather
-2. Kirim `/newbot`
-3. Ikuti instruksi untuk membuat bot baru
-4. Copy token yang diberikan
-
-### 5. Jalankan Bot
-```bash
+cp .env.example .env       # isi BOT_TOKEN
 python bot.py
 ```
+
+### Dapatkan Bot Token
+1. Buka Telegram, cari @BotFather
+2. Kirim `/newbot`, ikuti instruksi
+3. Copy token yang diberikan
 
 ## 📝 Cara Penggunaan
 

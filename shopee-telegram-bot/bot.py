@@ -6,7 +6,12 @@ Author: bagasadiik
 """
 
 import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import (
+    Update,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    BotCommand,
+)
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -168,16 +173,49 @@ async def unknown_command(update: Update, context):
     )
 
 
+async def post_init(application: Application):
+    """Dijalankan sekali saat bot start: daftarkan menu command & deskripsi otomatis."""
+    bot = application.bot
+    commands = [
+        BotCommand("start", "Mulai bot"),
+        BotCommand("help", "Panduan penggunaan"),
+        BotCommand("cek", "Cek detail produk Shopee"),
+        BotCommand("harga", "Cek harga & diskon produk"),
+        BotCommand("resi", "Lacak resi pengiriman"),
+        BotCommand("ongkir", "Cek ongkos kirim antar kota"),
+        BotCommand("toko", "Cek rating & info toko"),
+    ]
+    try:
+        await bot.set_my_commands(commands)
+        await bot.set_my_short_description(
+            "Tools Shopee: cek produk, harga, resi, ongkir & toko."
+        )
+        await bot.set_my_description(
+            "Bot tools Shopee. Cek detail produk, harga & diskon, lacak resi "
+            "pengiriman, cek ongkir, dan rating toko. Cukup kirim link produk "
+            "Shopee atau gunakan /help untuk daftar perintah."
+        )
+        me = await bot.get_me()
+        logger.info("Bot @%s siap. Menu command & deskripsi berhasil didaftarkan.", me.username)
+    except Exception as e:
+        logger.warning("Gagal mendaftarkan command/deskripsi: %s", e)
+
+
 def main():
     """Start the bot."""
     if not BOT_TOKEN:
+        print("=" * 55)
         print("❌ Error: BOT_TOKEN belum diset!")
-        print("Silakan set BOT_TOKEN di file .env")
-        print("Dapatkan token dari @BotFather di Telegram")
+        print("=" * 55)
+        print("Cara setting:")
+        print("  1. Buka file .env di folder ini")
+        print("  2. Isi baris: BOT_TOKEN=token_dari_BotFather")
+        print("  3. Jalankan ulang script ini")
+        print("\nBelum punya token? Chat @BotFather di Telegram, kirim /newbot")
         return
     
     # Build application
-    app = Application.builder().token(BOT_TOKEN).build()
+    app = Application.builder().token(BOT_TOKEN).post_init(post_init).build()
     
     # Command handlers
     app.add_handler(CommandHandler("start", start_command))

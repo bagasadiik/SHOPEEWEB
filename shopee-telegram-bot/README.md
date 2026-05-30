@@ -67,8 +67,26 @@ python bot.py
 
 Atau cukup kirim **link produk Shopee** langsung, bot akan otomatis menampilkan detail produk.
 
-## 🛠 Tech Stack
+## 🩺 Troubleshooting
 
+### `telegram.error.TimedOut` / `httpx.ReadTimeout` saat start
+Bot tidak bisa menjangkau `api.telegram.org`. Cek dulu:
+
+```bash
+curl -v --max-time 20 "https://api.telegram.org/bot<TOKEN>/getMe"
+```
+
+- Kalau muncul `{"ok":true,...}` → koneksi normal, mungkin cuma timeout sesaat, jalankan ulang.
+- Kalau hang / timeout / connection refused → `api.telegram.org` **diblokir** oleh ISP/jaringanmu (umum terjadi di beberapa ISP Indonesia). Solusi: gunakan **proxy** atau **VPN**.
+
+**Pakai proxy:** isi `PROXY_URL` di file `.env`, lalu jalankan ulang.
+```
+PROXY_URL=socks5://127.0.0.1:1080      # contoh SOCKS5
+PROXY_URL=http://127.0.0.1:8080        # contoh HTTP proxy
+```
+Bot sudah otomatis pakai proxy bila `PROXY_URL` diisi. Alternatif paling simpel: nyalakan VPN lalu jalankan `./run.sh`.
+
+## 🛠 Tech Stack
 - Python 3.10+
 - python-telegram-bot v21+
 - aiohttp (async HTTP requests)

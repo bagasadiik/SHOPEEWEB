@@ -8,6 +8,12 @@ BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 AFFILIATE_ID = os.getenv("AFFILIATE_ID", "")
 ADMIN_ID = os.getenv("ADMIN_ID", "")
 
+# Proxy (opsional). Isi jika api.telegram.org diblokir ISP/jaringan.
+# Contoh:
+#   PROXY_URL=socks5://127.0.0.1:1080
+#   PROXY_URL=http://127.0.0.1:8080
+PROXY_URL = os.getenv("PROXY_URL", "")
+
 # Shopee API Base URLs
 SHOPEE_API_BASE = "https://shopee.co.id/api/v4"
 SHOPEE_PRODUCT_API = f"{SHOPEE_API_BASE}/item/get"

@@ -20,7 +20,7 @@ from telegram.ext import (
     filters,
 )
 
-from config import BOT_TOKEN
+from config import BOT_TOKEN, PROXY_URL
 from handlers import (
     start_command,
     help_command,
@@ -214,8 +214,23 @@ def main():
         print("\nBelum punya token? Chat @BotFather di Telegram, kirim /newbot")
         return
     
-    # Build application
-    app = Application.builder().token(BOT_TOKEN).post_init(post_init).build()
+    # Build application dengan timeout panjang + dukungan proxy (opsional)
+    builder = (
+        Application.builder()
+        .token(BOT_TOKEN)
+        .connect_timeout(30.0)
+        .read_timeout(30.0)
+        .write_timeout(30.0)
+        .pool_timeout(30.0)
+        .get_updates_read_timeout(30.0)
+        .post_init(post_init)
+    )
+
+    if PROXY_URL:
+        print(f"🔌 Menggunakan proxy: {PROXY_URL}")
+        builder = builder.proxy(PROXY_URL).get_updates_proxy(PROXY_URL)
+
+    app = builder.build()
     
     # Command handlers
     app.add_handler(CommandHandler("start", start_command))
